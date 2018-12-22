@@ -80,7 +80,7 @@ htmlcov
 /examples/cherrypy-demo/demo.db
 /examples/flask/demo.db
 /examples/flask/static/avatars/
-
+/examples/restfulpy_demo/data/
 .ropeproject
 
 # vim
