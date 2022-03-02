@@ -93,7 +93,8 @@ class FTPStoreTestCase(SqlAlchemyTestCase):
             person1.file = File.create_from(
                 io.BytesIO(sample_content),
                 content_type='text/plain',
-                extension='.txt'
+                extension='.txt',
+                dynamic_path='dynamic_path'
             )
             self.assertIsInstance(person1.file, File)
             self.assertEqual(
