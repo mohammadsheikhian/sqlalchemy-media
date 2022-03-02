@@ -157,13 +157,24 @@ class Attachment(MutableDict):
         return self.key is None
 
     @property
+    def dynamic_path(self) -> str:
+        """
+        Relative Path of the file used to store and locate the file.
+
+        :type: str
+        """
+        _dynamic_path = self.get('dynamic_path')
+        return f'/{_dynamic_path}' if _dynamic_path else ''
+
+    @property
     def path(self) -> str:
         """
         Relative Path of the file used to store and locate the file.
 
         :type: str
         """
-        return '%s/%s' % (self.__directory__, self.filename)
+        return '%s%s/%s' % (self.__directory__, self.dynamic_path,
+                            self.filename)
 
     @property
     def filename(self) -> str:
@@ -295,6 +306,7 @@ class Attachment(MutableDict):
             content_type: str = None,
             original_filename: str = None,
             extension: str = None,
+            dynamic_path=None,
             store_id: str = None,
             overwrite: bool = False,
             suppress_pre_process: bool = False,
@@ -383,6 +395,7 @@ class Attachment(MutableDict):
         descriptor = self.__descriptor__(
             attachable,
             content_type=content_type,
+            dynamic_path=dynamic_path,
             original_filename=original_filename,
             extension=extension,
             max_length=self.__max_length__,
@@ -405,6 +418,7 @@ class Attachment(MutableDict):
                 original_filename=descriptor.original_filename,
                 extension=descriptor.extension,
                 content_type=descriptor.content_type,
+                dynamic_path=dynamic_path,
                 length=descriptor.content_length,
                 store_id=store_id,
                 reproducible=descriptor.reproducible
@@ -773,10 +787,12 @@ class Image(BaseImage):
         with ``auto_generate=True`` to fill it.
 
         """
+        self.setdefault('thumbnails', [])
         return self.get('thumbnails')
 
     def generate_thumbnail(
             self,
+            dynamic_path: str = None,
             width: int = None,
             height: int = None,
             ratio: float = None,
@@ -806,6 +822,7 @@ class Image(BaseImage):
         with store.open(self.path) as original_file:
             width, height, ratio, thumbnail = generate_thumbnail(
                 original_file,
+                dynamic_path,
                 width,
                 height,
                 ratio,
@@ -818,6 +835,7 @@ class Image(BaseImage):
 
     def get_thumbnail(
             self,
+            dynamic_path: str = None,
             width: int = None,
             height: int = None,
             ratio: float = None,
@@ -849,7 +867,7 @@ class Image(BaseImage):
         if ratio:
             ratio = round(ratio, ratio_precision)
 
-        if self.thumbnails is not None:
+        if self.thumbnails != []:
             for w, h, r, t in self.thumbnails:
                 if w == width or h == height or round(
                         r, ratio_precision) == ratio:
@@ -857,7 +875,7 @@ class Image(BaseImage):
 
         # thumbnail not found
         if auto_generate:
-            return self.generate_thumbnail(width, height, ratio)
+            return self.generate_thumbnail(dynamic_path, width, height, ratio)
         else:
             raise ThumbnailIsNotAvailableError(
                 f'Thumbnail is not available with these criteria:'

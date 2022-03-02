@@ -10,6 +10,7 @@ from .typing_ import FileLike
 
 def generate_thumbnail(
     original_image: Union[FileLike, StreamDescriptor],
+    dynamic_path: str = None,
     width: int = None,
     height: int = None,
     ratio: float = None,
@@ -52,7 +53,8 @@ def generate_thumbnail(
         thumbnail_buffer,
         content_type=f'image/{format_}',
         extension=extension,
-        dimension=(width, height)
+        dimension=(width, height),
+        dynamic_path=dynamic_path
     )
 
     return width, height, ratio, thumbnail

@@ -250,6 +250,42 @@ class ImageTestCase(TempStoreTestCase):
                 'http://static1.example.orm/thumbnails/thumbnail-'
             ))
 
+    def test_locate(self):
+
+        class Person(self.Base):
+            __tablename__ = 'person'
+            id = Column(Integer, primary_key=True)
+            image = Column(Image.as_mutable(Json), nullable=True)
+
+        session = self.create_all_and_get_session()
+
+        # person1 = Person(name='person1')
+        person1 = Person()
+        self.assertIsNone(person1.image)
+
+        with StoreManager(session):
+            person1.image = Image.create_from(
+                self.dog_jpeg,
+                dynamic_path='dynamic_path'
+            )
+            person1.image.generate_thumbnail(
+                dynamic_path='dynamic_path',
+                width=100
+            )
+            session.add(person1)
+            session.commit()
+
+        session = self.create_all_and_get_session()
+        person1 = session.query(Person).filter(Person.id == person1.id).one()
+        with StoreManager(session):
+            self.assertTrue(person1.image.locate().startswith(
+                    'http://static1.example.orm/images/dynamic_path/image-'
+            ))
+            thumbnail = person1.image.get_thumbnail(width=100)
+            self.assertTrue(thumbnail.locate().startswith(
+                'http://static1.example.orm/thumbnails/dynamic_path/thumbnail-'
+            ))
+
     def test_image_list(self):
 
         class Person(self.Base):
