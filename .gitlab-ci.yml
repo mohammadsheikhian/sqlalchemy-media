@@ -1,0 +1,15 @@
+stages:
+  - test
+
+Test and Coverage:
+  stage: test
+
+  before_script:
+    - virtualenv sqlalchemy-media-ve                                                                                            
+    - source sqlalchemy-media-ve/bin/activate
+    - pip install -r requirements-dev.txt
+    - pip install -r ci.txt
+    - pip install -e .
+
+  script:
+    - coverage run --source sqlalchemy_media $(which nosetests)
