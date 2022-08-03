@@ -1,1 +1,2 @@
 Flask-Cors
+Werkzeug==2.0.3

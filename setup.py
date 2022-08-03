@@ -10,7 +10,7 @@ with open(os.path.join(
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
 dependencies = [
-    'SQLAlchemy == 1.3.22',
+    'sqlalchemy',  # the last version at this commit is 1.4.39
     'pillow',
     'python-magic >= 0.4.12',
     'python-magic-bin >= 0.4.12; (sys_platform=="win32" or sys_platform=="darwin")'
