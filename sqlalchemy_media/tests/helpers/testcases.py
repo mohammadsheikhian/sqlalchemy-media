@@ -26,7 +26,7 @@ class SqlAlchemyTestCase(unittest.TestCase):
             bind=self.engine,
             autoflush=False,
             autocommit=False,
-            expire_on_commit=True,
+            expire_on_commit=False,
             twophase=False
         )
         return self.session_factory()
