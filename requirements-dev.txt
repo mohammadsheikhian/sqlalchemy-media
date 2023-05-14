@@ -9,3 +9,4 @@ moto
 mock-ssh-server
 autopep8
 google-compute-engine
+flask_cors
