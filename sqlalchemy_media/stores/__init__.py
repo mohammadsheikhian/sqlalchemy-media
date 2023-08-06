@@ -2,6 +2,7 @@ import functools
 from typing import Iterable
 
 from sqlalchemy import event
+from sqlalchemy.orm import LoaderCallableStatus
 from sqlalchemy.util.langhelpers import symbol
 
 from sqlalchemy_media.context import get_id as get_context_id
@@ -348,7 +349,9 @@ class StoreManager(object):
 
             def on_set_attr(target, value, old_value, initiator):
                 if old_value is None or old_value in (
-                    symbol('NEVER_SET'), symbol('NO_VALUE')
+                    symbol('NEVER_SET'),
+                    symbol('NO_VALUE'),
+                    LoaderCallableStatus.NO_VALUE,
                 ):
                     return
 

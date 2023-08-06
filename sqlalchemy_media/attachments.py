@@ -596,7 +596,13 @@ class AttachmentList(AttachmentCollection, MutableList):
 
             for new_item in value:
                 store_manager.adopted(new_item)
-            super().__setitem__(index, [self.observe_item(i) for i in value])
+
+            """
+            Because of sqlalchemy version 2,
+            we had to call list.__setitem__ directly
+            """
+            list.__setitem__(self, index, [self.observe_item(i) for i in value])
+            self.changed()
         else:
             old_value = self[index]
             if old_value:
@@ -604,7 +610,13 @@ class AttachmentList(AttachmentCollection, MutableList):
 
             value = self.observe_item(value)
             store_manager.adopted(value)
-            super().__setitem__(index, value)
+
+            """
+            Because of sqlalchemy version 2,
+            we had to call list.__setitem__ directly
+            """
+            list.__setitem__(self, index, value)
+            self.changed()
 
 
 class AttachmentDict(AttachmentCollection, MutableDict):

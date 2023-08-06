@@ -1,4 +1,3 @@
-
 import unittest
 from io import BytesIO
 from os.path import join, exists
