@@ -520,7 +520,8 @@ class CgiFieldStorageDescriptor(StreamCloserDescriptor):
         if content_type is None:
             content_type = storage.headers['Content-Type']
 
-        kwargs.setdefault('original_filename', storage.filename)
+        if kwargs.get('original_filename') is None:
+            kwargs['original_filename'] = storage.filename
 
         super().__init__(storage.file, content_type=content_type, **kwargs)
 
